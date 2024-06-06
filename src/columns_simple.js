@@ -1,4 +1,4 @@
-var fonts = {
+const fonts = {
   Roboto: {
     normal: "fonts/Roboto-Regular.ttf",
     bold: "fonts/Roboto-Medium.ttf",
@@ -7,11 +7,11 @@ var fonts = {
   },
 };
 
-var PdfPrinter = require("pdfmake");
-var printer = new PdfPrinter(fonts);
-var fs = require("fs");
+const PdfPrinter = require("pdfmake");
+const printer = new PdfPrinter(fonts);
+const fs = require("fs");
 
-var docDefinition = {
+const docDefinition = {
   content: [
     "By default paragraphs are stacked one on top of (or actually - below) another. ",
     "It's possible however to split any paragraph (or even the whole document) into columns.\n\n",
@@ -168,6 +168,6 @@ var docDefinition = {
   },
 };
 
-var pdfDoc = printer.createPdfKitDocument(docDefinition);
+const pdfDoc = printer.createPdfKitDocument(docDefinition);
 pdfDoc.pipe(fs.createWriteStream("pdfs/columns_simple.pdf"));
 pdfDoc.end();

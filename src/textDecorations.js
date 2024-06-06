@@ -1,10 +1,10 @@
-var path = require("path");
+const path = require("path");
 
 function mp(relFontPath) {
   return path.resolve(__dirname, relFontPath);
 }
 
-var fonts = {
+const fonts = {
   Roboto: {
     normal: mp("./fonts/Roboto-Regular.ttf"),
     bold: mp("./fonts/Roboto-Medium.ttf"),
@@ -13,12 +13,12 @@ var fonts = {
   },
 };
 
-var PdfPrinter = require("pdfmake");
-var printer = new PdfPrinter(fonts);
-var fs = require("fs");
+const PdfPrinter = require("pdfmake");
+const printer = new PdfPrinter(fonts);
+const fs = require("fs");
 
-var ct = [];
-var lorem = "Lorem ipsum dolor sit amet";
+const ct = [];
+const lorem = "Lorem ipsum dolor sit amet";
 
 ct.push({ text: "Higlighted text", fontSize: 18, background: "yellow" });
 ct.push(" ");
@@ -64,10 +64,10 @@ ct.push({
   ],
 });
 
-var docDefinition = {
+const docDefinition = {
   content: ct,
 };
 
-var pdfDoc = printer.createPdfKitDocument(docDefinition);
+const pdfDoc = printer.createPdfKitDocument(docDefinition);
 pdfDoc.pipe(fs.createWriteStream(mp("./pdfs/textDecorations.pdf")));
 pdfDoc.end();

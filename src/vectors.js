@@ -1,4 +1,4 @@
-var fonts = {
+const fonts = {
   Roboto: {
     normal: "fonts/Roboto-Regular.ttf",
     bold: "fonts/Roboto-Medium.ttf",
@@ -7,11 +7,11 @@ var fonts = {
   },
 };
 
-var PdfPrinter = require("pdfmake");
-var printer = new PdfPrinter(fonts);
-var fs = require("fs");
+const PdfPrinter = require("pdfmake");
+const printer = new PdfPrinter(fonts);
+const fs = require("fs");
 
-var docDefinition = {
+const docDefinition = {
   content: [
     {
       text: [
@@ -172,6 +172,6 @@ var docDefinition = {
   },
 };
 
-var pdfDoc = printer.createPdfKitDocument(docDefinition);
+const pdfDoc = printer.createPdfKitDocument(docDefinition);
 pdfDoc.pipe(fs.createWriteStream("pdfs/vectors.pdf"));
 pdfDoc.end();

@@ -1,4 +1,4 @@
-var fonts = {
+const fonts = {
   Roboto: {
     normal: "fonts/Roboto-Regular.ttf",
     bold: "fonts/Roboto-Medium.ttf",
@@ -7,11 +7,11 @@ var fonts = {
   },
 };
 
-var PdfPrinter = require("pdfmake");
-var printer = new PdfPrinter(fonts);
-var fs = require("fs");
+const PdfPrinter = require("pdfmake");
+const printer = new PdfPrinter(fonts);
+const fs = require("fs");
 
-var docDefinition = {
+const docDefinition = {
   content: [
     {
       text: "This is a page reference example. Page number of text element marked id property will be located in pageReference element. See below.\n\n",
@@ -166,8 +166,8 @@ var docDefinition = {
   },
 };
 
-var now = new Date();
-var pdfDoc = printer.createPdfKitDocument(docDefinition);
+const now = new Date();
+const pdfDoc = printer.createPdfKitDocument(docDefinition);
 pdfDoc.pipe(fs.createWriteStream("pdfs/pageReference.pdf"));
 pdfDoc.end();
 

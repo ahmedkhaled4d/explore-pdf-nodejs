@@ -1,4 +1,4 @@
-var fonts = {
+const fonts = {
   Roboto: {
     normal: "fonts/Roboto-Regular.ttf",
     bold: "fonts/Roboto-Medium.ttf",
@@ -7,11 +7,11 @@ var fonts = {
   },
 };
 
-var PdfPrinter = require("pdfmake");
-var printer = new PdfPrinter(fonts);
-var fs = require("fs");
+const PdfPrinter = require("pdfmake");
+const printer = new PdfPrinter(fonts);
+const fs = require("fs");
 
-var docDefinition = {
+const docDefinition = {
   content: [
     {
       text: "This is a TOC example. Text elements marked with tocItem: true will be located in the toc. See below.",
@@ -90,8 +90,8 @@ var docDefinition = {
   },
 };
 
-var now = new Date();
-var pdfDoc = printer.createPdfKitDocument(docDefinition);
+const now = new Date();
+const pdfDoc = printer.createPdfKitDocument(docDefinition);
 pdfDoc.pipe(fs.createWriteStream("pdfs/toc.pdf"));
 pdfDoc.end();
 

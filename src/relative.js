@@ -1,4 +1,4 @@
-var fonts = {
+const fonts = {
   Roboto: {
     normal: "fonts/Roboto-Regular.ttf",
     bold: "fonts/Roboto-Medium.ttf",
@@ -7,26 +7,26 @@ var fonts = {
   },
 };
 
-var PdfPrinter = require("pdfmake");
-var printer = new PdfPrinter(fonts);
-var fs = require("fs");
+const PdfPrinter = require("pdfmake");
+const printer = new PdfPrinter(fonts);
+const fs = require("fs");
 
-var left = 20;
-var width = 130;
-var top = 20;
-var height = 130;
-var yAxisWidth = 30;
-var xAxisHeight = 30;
-var tickSize = 5;
+const left = 20;
+const width = 130;
+const top = 20;
+const height = 130;
+const yAxisWidth = 30;
+const xAxisHeight = 30;
+const tickSize = 5;
 
-var chartLines = [];
-var chartText = [];
-var chart = [{ stack: chartText }, { canvas: chartLines }];
+const chartLines = [];
+const chartText = [];
+const chart = [{ stack: chartText }, { canvas: chartLines }];
 
 buildXAxis();
 buildYAxis();
 
-var documentDefinition = {
+const documentDefinition = {
   content: [
     {
       text: "We sometimes don't know the absolute position of text",
@@ -75,12 +75,12 @@ var documentDefinition = {
   ],
 };
 
-var pdfDoc = printer.createPdfKitDocument(documentDefinition);
+const pdfDoc = printer.createPdfKitDocument(documentDefinition);
 pdfDoc.pipe(fs.createWriteStream("pdfs/relative.pdf"));
 pdfDoc.end();
 
 function buildXAxis() {
-  var xTicks = [
+  const xTicks = [
     { t: "2016", x: 0, y: 0 },
     { t: "2017", x: 25, y: 0 },
     { t: "2018", x: 50, y: 0 },
@@ -116,7 +116,7 @@ function buildXAxis() {
 }
 
 function buildYAxis() {
-  var yTicks = [
+  const yTicks = [
     { t: "5", y: 0, x: 0 },
     { t: "4", y: 25, x: 0 },
     { t: "3", y: 50, x: 0 },
