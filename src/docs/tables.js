@@ -1,18 +1,17 @@
-import PdfPrinter from "pdfmake/build/pdfmake";
-import pdfFonts from "pdfmake/build/vfs_fonts";
-import * as fs from "fs";
-
-PdfPrinter.vfs = pdfFonts.pdfMake.vfs;
-const outputDir = "pdf/contract.pdf";
-const docDefinition: any = {
-  watermark: {
-    text: "جمعية عيني",
-    color: "blue",
-    opacity: 0.2,
-    bold: true,
-    italics: false,
+const fonts = {
+  Roboto: {
+    normal: "fonts/Roboto-Regular.ttf",
+    bold: "fonts/Roboto-Medium.ttf",
+    italics: "fonts/Roboto-Italic.ttf",
+    bolditalics: "fonts/Roboto-MediumItalic.ttf",
   },
+};
 
+const PdfPrinter = require("pdfmake");
+const printer = new PdfPrinter(fonts);
+const fs = require("fs");
+
+const docDefinition = {
   content: [
     { text: "Tables", style: "header" },
     "Official documentation is in progress, this document is just a glimpse of what is possible with pdfmake and its layout engine.",
@@ -142,7 +141,7 @@ const docDefinition: any = {
     {
       style: "tableExample",
       table: {
-        heights: function (row: number) {
+        heights: function (row) {
           return (row + 1) * 25;
         },
         body: [
@@ -333,6 +332,27 @@ const docDefinition: any = {
           ["Sample value 1", "Sample value 2", "Sample value 3"],
         ],
       },
+      layout: {
+        hLineWidth: function (i, node) {
+          return i === 0 || i === node.table.body.length ? 2 : 1;
+        },
+        vLineWidth: function (i, node) {
+          return i === 0 || i === node.table.widths.length ? 2 : 1;
+        },
+        hLineColor: function (i, node) {
+          return i === 0 || i === node.table.body.length ? "black" : "gray";
+        },
+        vLineColor: function (i, node) {
+          return i === 0 || i === node.table.widths.length ? "black" : "gray";
+        },
+        // hLineStyle: function (i, node) { return {dash: { length: 10, space: 4 }}; },
+        // vLineStyle: function (i, node) { return {dash: { length: 10, space: 4 }}; },
+        // paddingLeft: function(i, node) { return 4; },
+        // paddingRight: function(i, node) { return 4; },
+        // paddingTop: function(i, node) { return 2; },
+        // paddingBottom: function(i, node) { return 2; },
+        // fillColor: function (rowIndex, node, columnIndex) { return null; }
+      },
     },
     { text: "zebra style", margin: [0, 20, 0, 8] },
     {
@@ -346,11 +366,113 @@ const docDefinition: any = {
           ["Sample value 1", "Sample value 2", "Sample value 3"],
         ],
       },
-      // layout: {
-      //   fillColor: function (rowIndex, node, columnIndex) {
-      //     return rowIndex % 2 === 0 ? "#CCCCCC" : null;
-      //   },
-      // },
+      layout: {
+        fillColor: function (rowIndex, node, columnIndex) {
+          return rowIndex % 2 === 0 ? "#CCCCCC" : null;
+        },
+      },
+    },
+    { text: "handling fill color opacity...", margin: [0, 20, 0, 8] },
+    {
+      text: "... just hardcoding values in the second, third and fourth row",
+      margin: [0, 20, 0, 8],
+    },
+    {
+      style: "tableExample",
+      table: {
+        body: [
+          ["Sample value 1", "Sample value 2", "Sample value 3"],
+          [
+            { text: "Sample value 1", fillOpacity: 0.15, fillColor: "blue" },
+            { text: "Sample value 2", fillOpacity: 0.6, fillColor: "blue" },
+            { text: "Sample value 3", fillOpacity: 0.85, fillColor: "blue" },
+          ],
+          [
+            {
+              text: "Sample value 1",
+              fillOpacity: 0.15,
+              fillColor: ["stripe45d", "blue"],
+            },
+            {
+              text: "Sample value 2",
+              fillOpacity: 0.6,
+              fillColor: ["stripe45d", "blue"],
+            },
+            {
+              text: "Sample value 3",
+              fillOpacity: 0.85,
+              fillColor: ["stripe45d", "blue"],
+            },
+          ],
+          [
+            {
+              text: "Sample value 1",
+              fillOpacity: 0.15,
+              fillColor: "blue",
+              overlayPattern: ["stripe45d", "gray"],
+              overlayOpacity: 0.15,
+            },
+            {
+              text: "Sample value 2",
+              fillOpacity: 0.6,
+              fillColor: "blue",
+              overlayPattern: ["stripe45d", "gray"],
+              overlayOpacity: 0.5,
+            },
+            {
+              text: "Sample value 3",
+              fillOpacity: 0.85,
+              fillColor: "blue",
+              overlayPattern: ["stripe45d", "gray"],
+              overlayOpacity: 0.9,
+            },
+          ],
+          ["Sample value 1", "Sample value 2", "Sample value 3"],
+        ],
+      },
+    },
+    {
+      text: "... using a custom styler and overriding it in the second row",
+      margin: [0, 20, 0, 8],
+    },
+    {
+      style: "tableOpacityExample",
+      table: {
+        body: [
+          ["Sample value 1", "Sample value 2", "Sample value 3"],
+          [
+            { text: "Sample value 1", fillOpacity: 0.15 },
+            { text: "Sample value 2", fillOpacity: 0.6 },
+            { text: "Sample value 3", fillOpacity: 0.85 },
+          ],
+          ["Sample value 1", "Sample value 2", "Sample value 3"],
+        ],
+      },
+    },
+    {
+      text: "... with a function (opacity at 0 means fully transparent, i.e no color)",
+      margin: [0, 20, 0, 8],
+    },
+    {
+      style: "tableExample",
+      table: {
+        body: [
+          ["Sample value 1", "Sample value 2", "Sample value 3"],
+          ["Sample value 1", "Sample value 2", "Sample value 3"],
+          ["Sample value 1", "Sample value 2", "Sample value 3"],
+          ["Sample value 1", "Sample value 2", "Sample value 3"],
+          ["Sample value 1", "Sample value 2", "Sample value 3"],
+          ["Sample value 1", "Sample value 2", "Sample value 3"],
+          ["Sample value 1", "Sample value 2", "Sample value 3"],
+          ["Sample value 1", "Sample value 2", "Sample value 3"],
+        ],
+      },
+      layout: {
+        fillColor: "blue",
+        fillOpacity: function (rowIndex, node, columnIndex) {
+          return rowIndex / 8 + columnIndex / 3;
+        },
+      },
     },
     { text: "and can be used dash border", margin: [0, 20, 0, 8] },
     {
@@ -369,6 +491,37 @@ const docDefinition: any = {
           ["Sample value 1", "Sample value 2", "Sample value 3"],
           ["Sample value 1", "Sample value 2", "Sample value 3"],
         ],
+      },
+      layout: {
+        hLineWidth: function (i, node) {
+          return i === 0 || i === node.table.body.length ? 2 : 1;
+        },
+        vLineWidth: function (i, node) {
+          return i === 0 || i === node.table.widths.length ? 2 : 1;
+        },
+        hLineColor: function (i, node) {
+          return "black";
+        },
+        vLineColor: function (i, node) {
+          return "black";
+        },
+        hLineStyle: function (i, node) {
+          if (i === 0 || i === node.table.body.length) {
+            return null;
+          }
+          return { dash: { length: 10, space: 4 } };
+        },
+        vLineStyle: function (i, node) {
+          if (i === 0 || i === node.table.widths.length) {
+            return null;
+          }
+          return { dash: { length: 4 } };
+        },
+        // paddingLeft: function(i, node) { return 4; },
+        // paddingRight: function(i, node) { return 4; },
+        // paddingTop: function(i, node) { return 2; },
+        // paddingBottom: function(i, node) { return 2; },
+        // fillColor: function (i, node) { return null; }
       },
     },
     {
@@ -548,48 +701,194 @@ const docDefinition: any = {
         ],
       },
     },
+    {
+      text: "BorderColor per Cell with Column/row spans",
+      pageBreak: "before",
+      style: "subheader",
+    },
+    "Each cell-element can set the borderColor (the cell above or left of the current cell has priority",
+    {
+      style: "tableExample",
+      color: "#444",
+      table: {
+        widths: [200, "auto", "auto"],
+        headerRows: 2,
+        // keepWithHeaderRows: 1,
+        body: [
+          [
+            {
+              text: "Header with Colspan = 3",
+              style: "tableHeader",
+              colSpan: 3,
+              borderColor: ["#ff00ff", "#00ffff", "#ff00ff", "#00ffff"],
+              alignment: "center",
+            },
+            {},
+            {},
+          ],
+          [
+            {
+              text: "Header 1",
+              style: "tableHeader",
+              alignment: "center",
+            },
+            {
+              text: "Header 2",
+              style: "tableHeader",
+              alignment: "center",
+            },
+            {
+              text: "Header 3",
+              style: "tableHeader",
+              alignment: "center",
+            },
+          ],
+          ["Sample value 1", "Sample value 2", "Sample value 3"],
+          [
+            {
+              rowSpan: 3,
+              borderColor: ["#ff00ff", "#00ffff", "#ff00ff", "#00ffff"],
+              text: "rowSpan set to 3\nLorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor",
+            },
+            "Sample value 2",
+            {
+              text: "Sample value 3",
+              borderColor: ["#ff00ff", "#00ffff", "#ff00ff", "#00ffff"],
+            },
+          ],
+          ["", "Sample value 2", "Sample value 3"],
+          ["Sample value 1", "Sample value 2", "Sample value 3"],
+          [
+            "Sample value 1",
+            {
+              colSpan: 2,
+              rowSpan: 2,
+              borderColor: ["#ff00ff", "#00ffff", "#ff00ff", "#00ffff"],
+              text: "Both:\nrowSpan and colSpan\ncan be defined at the same time",
+            },
+            "",
+          ],
+          [
+            "Sample value 1",
+            {
+              text: "a",
+              borderColor: ["#ff00ff", "#00ffff", "#ff00ff", "#00ffff"],
+            },
+            {
+              text: "",
+              borderColor: ["#ff00ff", "#00ffff", "#ff00ff", "#00ffff"],
+            },
+          ],
+        ],
+      },
+    },
+    { text: "Image on table", pageBreak: "before", style: "subheader" },
+    {
+      style: "tableExample",
+      color: "#444",
+      table: {
+        widths: [200, "auto", "auto"],
+        headerRows: 2,
+        // keepWithHeaderRows: 1,
+        body: [
+          [
+            {
+              text: "Header with Colspan = 3",
+              style: "tableHeader",
+              colSpan: 3,
+              borderColor: ["#ff00ff", "#00ffff", "#ff00ff", "#00ffff"],
+              alignment: "center",
+            },
+            {},
+            {},
+          ],
+          [
+            {
+              text: "Header 1",
+              style: "tableHeader",
+              alignment: "center",
+            },
+            {
+              text: "Header 2",
+              style: "tableHeader",
+              alignment: "center",
+            },
+            {
+              text: "Header 3",
+              style: "tableHeader",
+              alignment: "center",
+            },
+          ],
+          [
+            {
+              image: "fonts/sampleImage.jpg",
+              cover: { width: 100, height: 100 },
+            },
+            {
+              image: "fonts/sampleImage.jpg",
+              cover: { width: 100, height: 100 },
+            },
+            {
+              image: "fonts/sampleImage.jpg",
+              cover: { width: 100, height: 100 },
+            },
+          ],
+          [
+            {
+              image: "fonts/sampleImage.jpg",
+              fit: [100, 100],
+            },
+            {
+              image: "fonts/sampleImage.jpg",
+              fit: [100, 100],
+            },
+            {
+              image: "fonts/sampleImage.jpg",
+              fit: [100, 100],
+            },
+          ],
+        ],
+      },
+    },
   ],
-  defaultStyle: {
-    font: "Roboto",
-  },
   styles: {
-    alignment: "justify",
     header: {
       fontSize: 18,
       bold: true,
+      margin: [0, 0, 0, 10],
     },
     subheader: {
-      fontSize: 15,
+      fontSize: 16,
       bold: true,
+      margin: [0, 10, 0, 5],
+    },
+    tableExample: {
+      margin: [0, 5, 0, 15],
+    },
+    tableOpacityExample: {
+      margin: [0, 5, 0, 15],
+      fillColor: "blue",
+      fillOpacity: 0.3,
+    },
+    tableHeader: {
+      bold: true,
+      fontSize: 13,
+      color: "black",
+    },
+  },
+  defaultStyle: {
+    // alignment: 'justify'
+  },
+  patterns: {
+    stripe45d: {
+      boundingBox: [1, 1, 4, 4],
+      xStep: 3,
+      yStep: 3,
+      pattern: "1 w 0 1 m 4 5 l s 2 0 m 5 3 l s",
     },
   },
 };
 
-PdfPrinter.createPdf(
-  docDefinition,
-  {},
-  {
-    Roboto: {
-      normal:
-        "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf",
-      bold: "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Medium.ttf",
-      italics:
-        "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Italic.ttf",
-      bolditalics:
-        "https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-MediumItalic.ttf",
-    },
-  }
-).getDataUrl((data) => {
-  const base64Data: string = data;
-  const base64String: string = base64Data.split(";base64,").pop() ?? "";
-  const pdfBuffer: Buffer = Buffer.from(base64String, "base64");
-
-  // Write buffer to a file
-  fs.writeFile(outputDir, pdfBuffer, (err: NodeJS.ErrnoException | null) => {
-    if (err) {
-      console.error("Error:", err);
-      return;
-    }
-    console.log("PDF file has been saved!");
-  });
-});
+const pdfDoc = printer.createPdfKitDocument(docDefinition);
+pdfDoc.pipe(fs.createWriteStream("pdfs/tables.pdf"));
+pdfDoc.end();
